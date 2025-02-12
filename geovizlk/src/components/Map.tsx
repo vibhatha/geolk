@@ -3,52 +3,63 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from './Map.module.css';
 import SidePanel from './SidePanel';
+import { RegionInfo } from "../types/RegionInfo";
 
 const Map: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("provinces");
+  const [selectedRegion, setSelectedRegion] = useState<RegionInfo | null>(null);
+  const mapInstance = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    if (!mapRef.current) return; // Ensure the map container exists
+    if (!mapRef.current) return;
 
-    // Initialize the map centered on Sri Lanka
-    const map = L.map(mapRef.current).setView([7.8731, 80.7718], 7.5);
+    // Clean up existing map instance if it exists
+    if (mapInstance.current) {
+      mapInstance.current.remove();
+    }
 
-    // Add OpenStreetMap tile layer
+    // Create new map instance
+    mapInstance.current = L.map(mapRef.current).setView([7.8731, 80.7718], 7.5);
+
+    // Add tile layer
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       attribution: "© OpenStreetMap contributors",
-    }).addTo(map);
+    }).addTo(mapInstance.current);
 
-    // Track the currently selected layer
     let selectedLayer: L.Path | null = null;
 
-    // Utility function to load and display GeoJSON data
     const loadGeoJson = async (filePath: string, color: string) => {
       try {
         const response = await fetch(filePath);
+        console.log(`Fetching ${filePath}`);
         if (!response.ok) {
           throw new Error(`Network response was not ok for ${filePath}`);
         }
-        const data: [number, number][][] = await response.json();
+        const data = await response.json();
+        console.log('GeoJSON data:', data);
 
-        // Convert each sub-array into a GeoJSON Feature
-        const features: GeoJSON.Feature<GeoJSON.Polygon>[] = data.map((coordinates) => ({
+        if (!mapInstance.current) return;
+
+        const features: GeoJSON.Feature<GeoJSON.Polygon>[] = data.map((coordinates: number[][]) => ({
           type: "Feature",
           geometry: {
             type: "Polygon",
-            coordinates: [coordinates], // Wrap in an array to match GeoJSON format
+            coordinates: [coordinates],
           },
-          properties: {},
+          properties: {
+            name: "Region Name",
+            code: "Region Code",
+            category: selectedCategory,
+          },
         }));
 
-        // Create a FeatureCollection
         const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Polygon> = {
           type: "FeatureCollection",
           features: features,
         };
 
-        // Add each feature to the map
         L.geoJSON(geoJsonData, {
           style: {
             color: color,
@@ -57,7 +68,8 @@ const Map: React.FC = () => {
           },
           onEachFeature: (feature, layer) => {
             layer.on("click", () => {
-              // If there's a previously selected layer, reset its style
+              if (!mapInstance.current) return;
+
               if (selectedLayer) {
                 selectedLayer.setStyle({
                   color: color,
@@ -66,28 +78,33 @@ const Map: React.FC = () => {
                 });
               }
 
-              // If clicking the same layer, deselect it
               if (selectedLayer === layer) {
                 selectedLayer = null;
+                setSelectedRegion(null);
               } else {
-                // Select the new layer
                 (layer as L.Path).setStyle({
                   color: "red",
                   weight: 3,
                   fillOpacity: 0.6,
                 });
                 selectedLayer = layer as L.Path;
+                
+                setSelectedRegion({
+                  name: feature.properties.name || "Unknown",
+                  code: feature.properties.code || "Unknown",
+                  category: selectedCategory,
+                });
               }
             });
           },
-        }).addTo(map);
+        }).addTo(mapInstance.current);
       } catch (error) {
         console.error(`Error loading GeoJSON data from ${filePath}:`, error);
       }
     };
 
     // Define categories and their corresponding file paths and colors
-    const categories: Record<string, { path: string; color: string }[]> = {
+    const categories = {
       provinces: [
         { path: "/provinces/LK-1.json", color: "red" },
         { path: "/provinces/LK-2.json", color: "green" },
@@ -100,49 +117,44 @@ const Map: React.FC = () => {
         { path: "/provinces/LK-9.json", color: "brown" },
       ],
       districts: [
-        { "path": "/districts/LK-11.json", "color": "red" },
-        { "path": "/districts/LK-12.json", "color": "green" },
-        { "path": "/districts/LK-13.json", "color": "blue" },
-        { "path": "/districts/LK-21.json", "color": "orange" },
-        { "path": "/districts/LK-22.json", "color": "purple" },
-        { "path": "/districts/LK-23.json", "color": "yellow" },
-        { "path": "/districts/LK-31.json", "color": "cyan" },
-        { "path": "/districts/LK-32.json", "color": "magenta" },
-        { "path": "/districts/LK-33.json", "color": "brown" },
-        { "path": "/districts/LK-41.json", "color": "pink" },
-        { "path": "/districts/LK-42.json", "color": "gray" },
-        { "path": "/districts/LK-43.json", "color": "teal" },
-        { "path": "/districts/LK-44.json", "color": "lime" },
-        { "path": "/districts/LK-45.json", "color": "indigo" },
-        { "path": "/districts/LK-51.json", "color": "navy" },
-        { "path": "/districts/LK-52.json", "color": "olive" },
-        { "path": "/districts/LK-53.json", "color": "maroon" },
-        { "path": "/districts/LK-61.json", "color": "gold" },
-        { "path": "/districts/LK-62.json", "color": "silver" },
-        { "path": "/districts/LK-71.json", "color": "crimson" },
-        { "path": "/districts/LK-72.json", "color": "azure" },
-        { "path": "/districts/LK-81.json", "color": "lavender" },
-        { "path": "/districts/LK-82.json", "color": "coral" },
-        { "path": "/districts/LK-91.json", "color": "salmon" },
-        { "path": "/districts/LK-92.json", "color": "peach" }
-    ],
-      // Add more categories as needed
+        { path: "/districts/LK-11.json", color: "red" },
+        { path: "/districts/LK-12.json", color: "green" },
+        { path: "/districts/LK-13.json", color: "blue" },
+        { path: "/districts/LK-21.json", color: "orange" },
+        { path: "/districts/LK-22.json", color: "purple" },
+        { path: "/districts/LK-23.json", color: "yellow" },
+        { path: "/districts/LK-31.json", color: "cyan" },
+        { path: "/districts/LK-32.json", color: "magenta" },
+        { path: "/districts/LK-33.json", color: "brown" },
+        { path: "/districts/LK-41.json", color: "pink" },
+        { path: "/districts/LK-42.json", color: "gray" },
+        { path: "/districts/LK-43.json", color: "teal" },
+        { path: "/districts/LK-44.json", color: "lime" },
+        { path: "/districts/LK-45.json", color: "indigo" },
+        { path: "/districts/LK-51.json", color: "navy" },
+        { path: "/districts/LK-52.json", color: "olive" },
+        { path: "/districts/LK-53.json", color: "maroon" },
+        { path: "/districts/LK-61.json", color: "gold" },
+        { path: "/districts/LK-62.json", color: "silver" },
+        { path: "/districts/LK-71.json", color: "crimson" },
+        { path: "/districts/LK-72.json", color: "azure" },
+        { path: "/districts/LK-81.json", color: "lavender" },
+        { path: "/districts/LK-82.json", color: "coral" },
+        { path: "/districts/LK-91.json", color: "salmon" },
+        { path: "/districts/LK-92.json", color: "peach" }
+      ],
     };
 
-    // Load the selected category's files
-    const selectedFiles = categories[selectedCategory];
+    const selectedFiles = categories[selectedCategory as keyof typeof categories];
     if (selectedFiles) {
       selectedFiles.forEach(file => loadGeoJson(file.path, file.color));
     }
 
-    // Clean up the map on component unmount
     return () => {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.GeoJSON) {
-          map.removeLayer(layer);
-        }
-      });
-      map.remove();
+      if (mapInstance.current) {
+        mapInstance.current.remove();
+        mapInstance.current = null;
+      }
     };
   }, [selectedCategory]);
 
@@ -155,6 +167,7 @@ const Map: React.FC = () => {
       <SidePanel 
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
+        selectedRegion={selectedRegion}
       />
     </div>
   );
