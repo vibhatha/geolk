@@ -1,0 +1,48 @@
+.info-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.info-nav {
+  padding: 1rem 2rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  color: #666;
+}
+
+.info-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.info-sections {
+  margin-top: 2rem;
+}
+
+.info-sections section {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-sections h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.info-sections p {
+  color: #666;
+  line-height: 1.6;
+} 
