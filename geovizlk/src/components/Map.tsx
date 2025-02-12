@@ -20,6 +20,9 @@ const Map: React.FC = () => {
       attribution: "© OpenStreetMap contributors",
     }).addTo(map);
 
+    // Track the currently selected layer
+    let selectedLayer: L.Path | null = null;
+
     // Utility function to load and display GeoJSON data
     const loadGeoJson = async (filePath: string, color: string) => {
       try {
@@ -54,11 +57,27 @@ const Map: React.FC = () => {
           },
           onEachFeature: (feature, layer) => {
             layer.on("click", () => {
-              (layer as L.Path).setStyle({
-                color: "blue",
-                weight: 3,
-                fillOpacity: 0.6,
-              });
+              // If there's a previously selected layer, reset its style
+              if (selectedLayer) {
+                selectedLayer.setStyle({
+                  color: color,
+                  weight: 2,
+                  fillOpacity: 0.1,
+                });
+              }
+
+              // If clicking the same layer, deselect it
+              if (selectedLayer === layer) {
+                selectedLayer = null;
+              } else {
+                // Select the new layer
+                (layer as L.Path).setStyle({
+                  color: "red",
+                  weight: 3,
+                  fillOpacity: 0.6,
+                });
+                selectedLayer = layer as L.Path;
+              }
             });
           },
         }).addTo(map);
