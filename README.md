@@ -2,7 +2,7 @@
 
 ## Enable PostGIS 
 
-[Learn more]([text](https://neon.tech/docs/extensions/postgis#enable-the-postgis-extension))
+[Learn more](https://neon.tech/docs/extensions/postgis#enable-the-postgis-extension)
 
 ## Prerequisites
 
