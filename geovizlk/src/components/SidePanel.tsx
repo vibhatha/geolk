@@ -21,8 +21,8 @@ const SidePanel: React.FC<SidePanelProps> = ({
           value={selectedCategory}
           onChange={(e) => onCategoryChange(e.target.value)}
         >
-          <option value="provinces">Provinces</option>
-          <option value="districts">Districts</option>
+          <option value="province">Provinces</option>
+          <option value="district">Districts</option>
         </select>
       </div>
 
@@ -36,13 +36,12 @@ const SidePanel: React.FC<SidePanelProps> = ({
             </div>
             <div className={styles.infoItem}>
               <label>Code:</label>
-              <span>{selectedRegion.code}</span>
+              <span>{selectedRegion.entity_id}</span>
             </div>
             <div className={styles.infoItem}>
-              <label>Category:</label>
-              <span>{selectedRegion.category}</span>
+              <label>Type:</label>
+              <span>{selectedRegion.type}</span>
             </div>
-            {/* Add more region information as needed */}
           </div>
         </div>
       )}

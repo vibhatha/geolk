@@ -1,7 +1,7 @@
 export interface RegionInfo {
-  code: string;
-  category: string;
+  entity_id: string;
   name: string;
+  type: string;
   // Add more properties as needed, such as:
   // population?: number;
   // area?: number;
