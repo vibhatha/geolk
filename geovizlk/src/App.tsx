@@ -17,10 +17,6 @@ const App: React.FC = () => {
               <div className="left-pane">
                 <Map />
               </div>
-              <div className="right-pane">
-                <h2>Map Information</h2>
-                <p>Details about the map will be displayed here.</p>
-              </div>
             </div>
           </div>
         } />
