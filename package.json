@@ -2,7 +2,8 @@
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "leaflet": "^1.9.4",
-    "react-router-dom": "^7.1.5"
+    "react-router-dom": "^7.1.5",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.16"
