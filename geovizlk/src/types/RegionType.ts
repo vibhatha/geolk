@@ -1,0 +1,1 @@
+export type RegionType = 'province' | 'district'; 

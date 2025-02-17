@@ -1,9 +1,13 @@
 import { RegionInfo } from '../types/RegionInfo';
+import { API_ENDPOINTS } from '../config/api.config';
+import { apiService } from './apiService';
+import { RegionType } from '../types/RegionType';
 
 export const fetchRegions = async (type: string): Promise<RegionInfo[]> => {
-  const response = await fetch(`http://127.0.0.1:8000/api/v1/regions/type/${type}/`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${type} data`);
+  try {
+    return await apiService.get<RegionInfo[]>(API_ENDPOINTS.regions.byType(type as RegionType));
+  } catch (error) {
+    console.error('Error fetching regions:', error);
+    throw error;
   }
-  return response.json();
 }; 

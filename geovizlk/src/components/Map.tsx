@@ -102,8 +102,8 @@ const Map: React.FC = () => {
                 
                 setSelectedRegion({
                   name: feature.properties.name || "Unknown",
-                  entity_id: feature.properties.code || "Unknown",
-                  type: feature.properties.category || "Unknown",
+                  entity_id: feature.properties.entity_id || "Unknown",
+                  type: feature.properties.type || "Unknown",
                 });
               }
             });
@@ -131,6 +131,7 @@ const Map: React.FC = () => {
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
         selectedRegion={selectedRegion}
+        selectedRegionId={selectedRegion ? selectedRegion.entity_id : null}
       />
     </div>
   );
