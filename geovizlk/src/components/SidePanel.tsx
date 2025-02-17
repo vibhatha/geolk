@@ -4,6 +4,9 @@ import styles from './SidePanel.module.css';
 import { DataService, PopulationData } from '../services/dataService';
 import AgeDistributionChart, { AgeDistributionData } from './AgeDistributionChart';
 import EthnicityDistributionChart, { EthnicityDistributionData } from './EthnicityDistributionChart';
+import GenderDistributionChart, { GenderDistributionData } from './GenderDistributionChart';
+import MaritalStatusDistributionChart, { MaritalStatusDistributionData } from './MaritalStatusDistributionChart';
+import ReligiousAffiliationDistributionChart, { ReligiousAffiliationDistributionData } from './ReligiousAffiliationDistributionChart';
 
 interface SidePanelProps {
   selectedCategory: string;
@@ -21,6 +24,9 @@ const SidePanel: React.FC<SidePanelProps> = ({
   const [populationData, setPopulationData] = useState<PopulationData[] | null>(null);
   const [ageDistributionData, setAgeDistributionData] = useState<AgeDistributionData | null>(null);
   const [ethnicityDistributionData, setEthnicityDistributionData] = useState<EthnicityDistributionData | null>(null);
+  const [genderDistributionData, setGenderDistributionData] = useState<GenderDistributionData | null>(null);
+  const [maritalStatusDistributionData, setMaritalStatusDistributionData] = useState<MaritalStatusDistributionData | null>(null);
+  const [religiousAffiliationDistributionData, setReligiousAffiliationDistributionData] = useState<ReligiousAffiliationDistributionData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +35,9 @@ const SidePanel: React.FC<SidePanelProps> = ({
       setPopulationData(null);
       setAgeDistributionData(null);
       setEthnicityDistributionData(null);
+      setGenderDistributionData(null);
+      setMaritalStatusDistributionData(null);
+      setReligiousAffiliationDistributionData(null);
       return;
     }
 
@@ -45,6 +54,15 @@ const SidePanel: React.FC<SidePanelProps> = ({
 
         const ethnicityData = await DataService.fetchEthnicityDistributionById(selectedRegionId);
         setEthnicityDistributionData(ethnicityData);
+
+        const genderData = await DataService.fetchGenderDistributionById(selectedRegionId);
+        setGenderDistributionData(genderData);
+
+        const maritalStatusData = await DataService.fetchMaritalStatusDistributionById(selectedRegionId);
+        setMaritalStatusDistributionData(maritalStatusData);
+
+        const religiousAffiliationData = await DataService.fetchReligiousAffiliationDistributionById(selectedRegionId);
+        setReligiousAffiliationDistributionData(religiousAffiliationData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch data');
       } finally {
@@ -115,6 +133,27 @@ const SidePanel: React.FC<SidePanelProps> = ({
             <div className={styles.ethnicityDistribution}>
               <h3>Ethnicity Distribution</h3>
               <EthnicityDistributionChart data={ethnicityDistributionData} />
+            </div>
+          )}
+
+          {genderDistributionData && (
+            <div className={styles.genderDistribution}>
+              <h3>Gender Distribution</h3>
+              <GenderDistributionChart data={genderDistributionData} />
+            </div>
+          )}
+
+          {maritalStatusDistributionData && (
+            <div className={styles.maritalStatusDistribution}>
+              <h3>Marital Status Distribution</h3>
+              <MaritalStatusDistributionChart data={maritalStatusDistributionData} />
+            </div>
+          )}
+
+          {religiousAffiliationDistributionData && (
+            <div className={styles.religiousAffiliationDistribution}>
+              <h3>Religious Affiliation Distribution</h3>
+              <ReligiousAffiliationDistributionChart data={religiousAffiliationDistributionData} />
             </div>
           )}
         </>

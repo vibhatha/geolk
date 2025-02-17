@@ -2,6 +2,9 @@ import { API_ENDPOINTS, isValidRegionType, isValidRegionId } from '../config/api
 import { apiService } from './apiService';
 import { AgeDistributionData } from '../components/AgeDistributionChart';
 import { EthnicityDistributionData } from '../components/EthnicityDistributionChart';
+import { GenderDistributionData } from '../components/GenderDistributionChart';
+import { MaritalStatusDistributionData } from '../components/MaritalStatusDistributionChart';
+import { ReligiousAffiliationDistributionData } from '../components/ReligiousAffiliationDistributionChart';
 
 export interface PopulationData {
   region: string;
@@ -60,24 +63,31 @@ export class DataService {
     const endpoint = API_ENDPOINTS.ethnicityDistribution.byId(regionId);
     return apiService.get<EthnicityDistributionData>(endpoint);
   }
+
+  static async fetchGenderDistributionById(regionId: string): Promise<GenderDistributionData> {
+    if (!isValidRegionId(regionId)) {
+      throw new Error(`Invalid region ID: ${regionId}`);
+    }
+    
+    const endpoint = API_ENDPOINTS.genderDistribution.byId(regionId);
+    return apiService.get<GenderDistributionData>(endpoint);
+  }
+
+  static async fetchMaritalStatusDistributionById(regionId: string): Promise<MaritalStatusDistributionData> {
+    if (!isValidRegionId(regionId)) {
+      throw new Error(`Invalid region ID: ${regionId}`);
+    }
+    
+    const endpoint = API_ENDPOINTS.maritalStatus.byId(regionId);
+    return apiService.get<MaritalStatusDistributionData>(endpoint);
+  }
+
+  static async fetchReligiousAffiliationDistributionById(regionId: string): Promise<ReligiousAffiliationDistributionData> {
+    if (!isValidRegionId(regionId)) {
+      throw new Error(`Invalid region ID: ${regionId}`);
+    }
+    
+    const endpoint = API_ENDPOINTS.religiousAffiliation.byId(regionId);
+    return apiService.get<ReligiousAffiliationDistributionData>(endpoint);
+  }
 }   
-
-//// Usage example:
-
-// interface PopulationData {
-//   total: number;
-//   year: number;
-//   // ... other fields
-// }
-
-// // Fetch population data for a province
-// const populationData = await DataService.fetchRegionData<PopulationData>(
-//   'population',
-//   'province'
-// );
-
-// // Fetch population data for a specific region
-// const regionPopulation = await DataService.fetchRegionDataById<PopulationData>(
-//   'population',
-//   'LK-1'
-// ); 
