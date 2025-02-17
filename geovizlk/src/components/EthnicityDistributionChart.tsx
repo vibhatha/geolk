@@ -1,41 +1,39 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
-export interface AgeDistributionData {
+export interface EthnicityDistributionData {
   region_id: string;
   region_name: string;
   total_population: number;
-  less_than_10: number;
-  age_10_to_19: number;
-  age_20_to_29: number;
-  age_30_to_39: number;
-  age_40_to_49: number;
-  age_50_to_59: number;
-  age_60_to_69: number;
-  age_70_to_79: number;
-  age_80_to_89: number;
-  age_90_and_above: number;
+  sinhalese: number;
+  sl_tamil: number;
+  ind_tamil: number;
+  sl_moor: number;
+  burgher: number;
+  malay: number;
+  sl_chetty: number;
+  bharatha: number;
+  other_eth: number;
   year: number;
 }
 
-interface AgeDistributionChartProps {
-  data: AgeDistributionData;
+interface EthnicityDistributionChartProps {
+  data: EthnicityDistributionData;
 }
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#36A2EB', '#FFCE56', '#FF9F40', '#FF6384', '#36A2EB'];
 
-const AgeDistributionChart: React.FC<AgeDistributionChartProps> = ({ data }) => {
+const EthnicityDistributionChart: React.FC<EthnicityDistributionChartProps> = ({ data }) => {
   const chartData = [
-    { name: 'Less than 10', value: data.less_than_10 },
-    { name: '10 to 19', value: data.age_10_to_19 },
-    { name: '20 to 29', value: data.age_20_to_29 },
-    { name: '30 to 39', value: data.age_30_to_39 },
-    { name: '40 to 49', value: data.age_40_to_49 },
-    { name: '50 to 59', value: data.age_50_to_59 },
-    { name: '60 to 69', value: data.age_60_to_69 },
-    { name: '70 to 79', value: data.age_70_to_79 },
-    { name: '80 to 89', value: data.age_80_to_89 },
-    { name: '90 and above', value: data.age_90_and_above },
+    { name: 'Sinhalese', value: data.sinhalese },
+    { name: 'Sri Lankan Tamil', value: data.sl_tamil },
+    { name: 'Indian Tamil', value: data.ind_tamil },
+    { name: 'Sri Lankan Moor', value: data.sl_moor },
+    { name: 'Burgher', value: data.burgher },
+    { name: 'Malay', value: data.malay },
+    { name: 'Sri Lankan Chetty', value: data.sl_chetty },
+    { name: 'Bharatha', value: data.bharatha },
+    { name: 'Other', value: data.other_eth },
   ];
 
   return (
@@ -71,4 +69,4 @@ const AgeDistributionChart: React.FC<AgeDistributionChartProps> = ({ data }) => 
   );
 };
 
-export default AgeDistributionChart; 
+export default EthnicityDistributionChart; 

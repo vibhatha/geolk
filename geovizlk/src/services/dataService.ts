@@ -1,6 +1,7 @@
 import { API_ENDPOINTS, isValidRegionType, isValidRegionId } from '../config/api.config';
 import { apiService } from './apiService';
 import { AgeDistributionData } from '../components/AgeDistributionChart';
+import { EthnicityDistributionData } from '../components/EthnicityDistributionChart';
 
 export interface PopulationData {
   region: string;
@@ -49,6 +50,15 @@ export class DataService {
     
     const endpoint = API_ENDPOINTS.ageDistribution.byId(regionId);
     return apiService.get<AgeDistributionData>(endpoint);
+  }
+
+  static async fetchEthnicityDistributionById(regionId: string): Promise<EthnicityDistributionData> {
+    if (!isValidRegionId(regionId)) {
+      throw new Error(`Invalid region ID: ${regionId}`);
+    }
+    
+    const endpoint = API_ENDPOINTS.ethnicityDistribution.byId(regionId);
+    return apiService.get<EthnicityDistributionData>(endpoint);
   }
 }   
 

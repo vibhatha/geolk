@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { RegionInfo } from '../types/RegionInfo';
 import styles from './SidePanel.module.css';
 import { DataService, PopulationData } from '../services/dataService';
-import AgeDistributionChart from './AgeDistributionChart';
+import AgeDistributionChart, { AgeDistributionData } from './AgeDistributionChart';
+import EthnicityDistributionChart, { EthnicityDistributionData } from './EthnicityDistributionChart';
 
 interface SidePanelProps {
   selectedCategory: string;
@@ -19,6 +20,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
 }) => {
   const [populationData, setPopulationData] = useState<PopulationData[] | null>(null);
   const [ageDistributionData, setAgeDistributionData] = useState<AgeDistributionData | null>(null);
+  const [ethnicityDistributionData, setEthnicityDistributionData] = useState<EthnicityDistributionData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,6 +28,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
     if (!selectedRegionId) {
       setPopulationData(null);
       setAgeDistributionData(null);
+      setEthnicityDistributionData(null);
       return;
     }
 
@@ -39,6 +42,9 @@ const SidePanel: React.FC<SidePanelProps> = ({
 
         const ageData = await DataService.fetchAgeDistributionById(selectedRegionId);
         setAgeDistributionData(ageData);
+
+        const ethnicityData = await DataService.fetchEthnicityDistributionById(selectedRegionId);
+        setEthnicityDistributionData(ethnicityData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch data');
       } finally {
@@ -102,6 +108,13 @@ const SidePanel: React.FC<SidePanelProps> = ({
             <div className={styles.ageDistribution}>
               <h3>Age Distribution</h3>
               <AgeDistributionChart data={ageDistributionData} />
+            </div>
+          )}
+
+          {ethnicityDistributionData && (
+            <div className={styles.ethnicityDistribution}>
+              <h3>Ethnicity Distribution</h3>
+              <EthnicityDistributionChart data={ethnicityDistributionData} />
             </div>
           )}
         </>
