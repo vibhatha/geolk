@@ -164,4 +164,4 @@ const SidePanel: React.FC<SidePanelProps> = ({
   );
 };
 
-export default SidePanel; 
+export default SidePanel;

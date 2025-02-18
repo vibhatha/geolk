@@ -33,6 +33,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Add after DATABASES configuration
+
+# GDAL Configuration
+GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
+PROJ_LIBRARY_PATH = os.getenv('PROJ_LIBRARY_PATH')
+
 
 # Application definition
 
@@ -43,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'geodatalk',
 ]
 
 MIDDLEWARE = [
