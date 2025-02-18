@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geodatalk"
+version = "0.1.0"
+description = "Geo Data processing and analysis"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Vibhatha Abeykoon", email = "vibhatha@gmail.com"},
+]
+dependencies = [
+    "Django>=4.2.19",
+    "psycopg2-binary>=2.9.9",
+    "djangorestframework>=3.14.0",
+    "djangorestframework-gis>=1.0",
+    "GDAL>=3.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.12.1",
+    "isort>=5.13.2",
+    "flake8>=7.0.0",
+    "pytest>=7.4.4",
+    "pytest-django>=4.7.0",
+]
+
+[tool.setuptools]
+packages = ["geodatalk"]
+package-dir = {"" = "geodatalk"}
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "geodatalk.settings"
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-v --tb=short"
+testpaths = ["tests"]

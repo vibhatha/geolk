@@ -1,0 +1,3 @@
+[submodule "submodules/gig-data"]
+	path = submodules/gig-data
+	url = https://github.com/vibhatha/gig-data

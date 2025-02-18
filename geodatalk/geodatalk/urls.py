@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from geo_app.views import GeoPolygonViewSet, api_root
 
 urlpatterns = [
+    path('', api_root, name='api-root'),
     path('admin/', admin.site.urls),
+    path('api/v1/regions/', GeoPolygonViewSet.as_view({'get': 'list'}), name='region-list'),
+    path('api/v1/regions/<str:pk>/', GeoPolygonViewSet.as_view({'get': 'retrieve'}), name='region-detail'),
 ]
