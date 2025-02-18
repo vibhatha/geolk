@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'geo_app',
     'rest_framework',
     'rest_framework_gis',
+    "corsheaders",
 ]
 
 # Add REST Framework settings
@@ -73,6 +74,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'geodatalk.urls'
@@ -154,3 +157,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# geodatalk/geodatalk/settings.py
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# geodatalk/geodatalk/settings.py
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5174",  # Your React app's URL
+]

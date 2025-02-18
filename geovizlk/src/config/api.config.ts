@@ -1,3 +1,5 @@
+const GEOLK_API_BASE_URL = import.meta.env.VITE_GEOLK_API_BASE_URL || 'http://localhost:8001/api/v1';
+
 export const MYLOCAL_API_BASE_URL = import.meta.env.VITE_MYLOCAL_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 // Type definitions for parameters
@@ -44,6 +46,11 @@ export const API_ENDPOINTS = {
   religiousAffiliation: {
     byType: (type: RegionType) => `${MYLOCAL_API_BASE_URL}/religious-affiliation/type/${type}/`,
     byId: (id: RegionId) => `${MYLOCAL_API_BASE_URL}/religious-affiliation/id/${id}/`,
+  },
+  
+  geo: {
+    byType: (type: RegionType) => `${GEOLK_API_BASE_URL}/regions/?type=${type}`,
+    byId: (id: string) => `${GEOLK_API_BASE_URL}/regions/${id}/`,
   },
 } as const;
 

@@ -5,6 +5,7 @@ import styles from './Map.module.css';
 import SidePanel from './SidePanel';
 import { RegionInfo } from "../types/RegionInfo";
 import { fetchRegions } from "../services/regionService";
+import { geoService } from '../services/geoService';
 
 const Map: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -43,35 +44,12 @@ const Map: React.FC = () => {
     let selectedLayer: L.Path | null = null;
 
     const loadGeoJson = async (region: RegionInfo) => {
-      const filePath = `/${region.type}s/${region.entity_id}.json`;
       try {
-        const response = await fetch(filePath);
-        if (!response.ok) {
-          throw new Error(`Network response was not ok for ${filePath}`);
-        }
-        const data = await response.json();
-
+        const geoData = await geoService.fetchGeoJsonById(region.entity_id);
+        
         if (!mapInstance.current) return;
 
-        const features: GeoJSON.Feature<GeoJSON.Polygon>[] = data.map((coordinates: number[][]) => ({
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: [coordinates],
-          },
-          properties: {
-            name: region.name,
-            entity_id: region.entity_id,
-            type: region.type,
-          },
-        }));
-
-        const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Polygon> = {
-          type: "FeatureCollection",
-          features: features,
-        };
-
-        L.geoJSON(geoJsonData, {
+        L.geoJSON(geoData, {
           style: {
             color: "blue",
             weight: 2,
@@ -101,16 +79,16 @@ const Map: React.FC = () => {
                 selectedLayer = layer as L.Path;
                 
                 setSelectedRegion({
-                  name: feature.properties.name || "Unknown",
-                  entity_id: feature.properties.entity_id || "Unknown",
-                  type: feature.properties.type || "Unknown",
+                  name: feature.properties.name,
+                  entity_id: feature.properties.region_id,
+                  type: feature.properties.type,
                 });
               }
             });
           },
         }).addTo(mapInstance.current);
       } catch (error) {
-        console.error(`Error loading GeoJSON data from ${filePath}:`, error);
+        console.error(`Error loading GeoJSON data for region ${region.entity_id}:`, error);
       }
     };
 
