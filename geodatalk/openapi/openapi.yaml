@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: GeoPolygon GraphQL API
+  description: GraphQL API for managing polygonal regions
+  version: 1.0.0
+servers:
+  - url: https://api.yourdomain.com/graphql
+    description: GraphQL API
+
+paths:
+  /graphql:
+    post:
+      summary: Execute GraphQL queries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  example: "query { allPolygons { name regionId } }"
+      responses:
+        "200":
+          description: GraphQL response

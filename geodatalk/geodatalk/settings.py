@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_gis',
     "corsheaders",
+    "graphene_django",
+    "graphene_file_upload",
 ]
 
 # Add REST Framework settings
@@ -97,6 +99,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'geodatalk.wsgi.application'
+
+GRAPHENE = {
+    "SCHEMA": "geo_app.schema.schema"  # Schema entry point
+}
+
 
 
 # Database
