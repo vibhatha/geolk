@@ -2,6 +2,7 @@ from graphene_django.types import DjangoObjectType
 import graphene
 from geo_app.models import GeoPolygon
 from geo_app.schema.types import GeoPolygonType
+
 class CreateGeoPolygon(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)

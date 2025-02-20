@@ -20,4 +20,4 @@ class GeoJSONScalar(Scalar):
 
     @staticmethod
     def parse_value(value):
-        return json.loads(value) 
+        return json.loads(value)

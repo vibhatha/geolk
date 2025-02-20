@@ -1,4 +1,4 @@
 import graphene
-from .queries import Query
+from geo_app.schema.queries import Query
 
 schema = graphene.Schema(query=Query) 

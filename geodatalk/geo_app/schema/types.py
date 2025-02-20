@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.types import DjangoObjectType
 from geo_app.models import GeoPolygon
-from .scalars import GeoJSONScalar
+from geo_app.schema.scalars import GeoJSONScalar
 
 class GeoPolygonType(DjangoObjectType):
     geom = GeoJSONScalar()

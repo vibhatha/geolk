@@ -1,5 +1,5 @@
 import graphene
-from .types import GeoPolygonType
+from geo_app.schema.types import GeoPolygonType
 from geo_app.models import GeoPolygon
 
 class Query(graphene.ObjectType):
