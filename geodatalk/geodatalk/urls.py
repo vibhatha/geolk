@@ -16,14 +16,40 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from geo_app.views import GeoPolygonViewSet, api_root
+from django.urls import path, re_path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from graphene_django.views import GraphQLView
+from graphql_playground.views import GraphQLPlaygroundView
+from django.views.decorators.csrf import csrf_exempt
+from geo_app.views import GeoPolygonViewSet, api_root
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="GeoData API",
+        default_version='v1',
+        description="API for geographic data visualization",
+        terms_of_service="https://www.yourapp.com/terms/",
+        contact=openapi.Contact(email="contact@yourapp.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
-    path('', api_root, name='api-root'),
     path('admin/', admin.site.urls),
+    path('', api_root, name='api-root'),
     path('api/v1/regions/', GeoPolygonViewSet.as_view({'get': 'list'}), name='region-list'),
     path('api/v1/regions/<str:pk>/', GeoPolygonViewSet.as_view({'get': 'retrieve'}), name='region-detail'),
-    # GraphQL
-    path("graphql/", GraphQLView.as_view(graphiql=True)),  # GraphiQL enabled
+    
+    # GraphQL URLs
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path('playground/', GraphQLPlaygroundView.as_view(endpoint='/graphql/')),
+    
+    # API documentation URLs
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
