@@ -15,8 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.urls import path, re_path
+from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -41,8 +40,19 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', api_root, name='api-root'),
-    path('api/v1/regions/', GeoPolygonViewSet.as_view({'get': 'list'}), name='region-list'),
-    path('api/v1/regions/<str:pk>/', GeoPolygonViewSet.as_view({'get': 'retrieve'}), name='region-detail'),
+    path('api/v1/regions/', GeoPolygonViewSet.as_view({
+        'get': 'list',
+        'post': 'create'
+    }), name='region-list'),
+    path('api/v1/regions/<str:region_id>/', GeoPolygonViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'patch': 'partial_update',
+        'delete': 'destroy'
+    }), name='region-detail'),
+    
+    # Authentication URLs
+    path('api-auth/', include('rest_framework.urls')),
     
     # GraphQL URLs
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
