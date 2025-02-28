@@ -1,13 +1,155 @@
 openapi: 3.0.3
 info:
-  title: GeoPolygon GraphQL API
-  description: GraphQL API for managing polygonal regions and topologies
+  title: GeoPolygon and Topology API
+  description: |
+    REST and GraphQL API for managing polygonal regions and topologies.
+    
+    ## GraphQL Endpoints
+    - `/graphql/` - GraphQL endpoint for all operations
+    
+    Example GraphQL queries:
+    ```graphql
+    # Get all topologies
+    query {
+      allTopologies {
+        regionId
+        name
+        type
+        topologyData
+      }
+    }
+
+    # Get all regions
+    query {
+      allRegions {
+        id
+        name
+        type
+        geom
+      }
+    }
+    ```
   version: 1.0.0
+
 servers:
   - url: https://api.yourdomain.com
     description: API Server
 
 paths:
+  /graphql/:
+    post:
+      summary: GraphQL endpoint
+      description: Handles all GraphQL queries and mutations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  example: |
+                    query {
+                      allTopologies {
+                        regionId
+                        name
+                      }
+                    }
+                variables:
+                  type: object
+      responses:
+        "200":
+          description: GraphQL response
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/regions/:
+    get:
+      summary: List all regions
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Filter by region type (e.g., 'provincial', 'district')
+      responses:
+        "200":
+          description: List of regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GeoPolygon'
+    post:
+      summary: Create a new region
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoPolygonInput'
+      responses:
+        "201":
+          description: Created region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoPolygon'
+
+  /api/regions/{region_id}/:
+    get:
+      summary: Get region by ID
+      parameters:
+        - in: path
+          name: region_id
+          required: true
+          schema:
+            type: string
+          description: Region ID
+      responses:
+        "200":
+          description: Region data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoPolygon'
+    put:
+      summary: Update region
+      parameters:
+        - in: path
+          name: region_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoPolygonInput'
+      responses:
+        "200":
+          description: Updated region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoPolygon'
+    delete:
+      summary: Delete region
+      parameters:
+        - in: path
+          name: region_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Region deleted
+
   /api/topology/:
     get:
       summary: List all topologies
@@ -26,6 +168,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Topology'
+    post:
+      summary: Create a new topology
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopologyInput'
+      responses:
+        "201":
+          description: Created topology
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topology'
 
   /api/topology/{region_id}/:
     get:
@@ -44,9 +201,100 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Topology'
+    put:
+      summary: Update topology
+      parameters:
+        - in: path
+          name: region_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopologyInput'
+      responses:
+        "200":
+          description: Updated topology
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topology'
+    delete:
+      summary: Delete topology
+      parameters:
+        - in: path
+          name: region_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Topology deleted
 
 components:
   schemas:
+    GeoPolygonInput:
+      type: object
+      required:
+        - name
+        - type
+        - geometry
+      properties:
+        name:
+          type: string
+          example: "Western Province"
+        type:
+          type: string
+          example: "provincial"
+        geometry:
+          type: object
+          description: GeoJSON geometry structure
+
+    GeoPolygon:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        region_id:
+          type: string
+          example: "LK-1"
+        name:
+          type: string
+          example: "Western Province"
+        type:
+          type: string
+          example: "provincial"
+        geometry:
+          type: object
+          description: GeoJSON geometry
+          properties:
+            type:
+              type: string
+              example: "MultiPolygon"
+            coordinates:
+              type: array
+
+    TopologyInput:
+      type: object
+      required:
+        - name
+        - type
+        - topology_data
+      properties:
+        name:
+          type: string
+          example: "Western Province"
+        type:
+          type: string
+          example: "provincial"
+        topology_data:
+          type: object
+          description: TopoJSON data structure
+
     Topology:
       type: object
       properties:
@@ -70,20 +318,6 @@ components:
               type: object
             arcs:
               type: array
-
-    # Keep existing GeoPolygon schema if needed
-    GeoPolygon:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-        geometry:
-          type: object
-          description: GeoJSON geometry
 
   securitySchemes:
     bearerAuth:

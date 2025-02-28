@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from .models import GeoPolygon, Topology
+from geo_app.models import GeoPolygon, Topology
 
 class GeoPolygonSerializer(GeoFeatureModelSerializer):
     class Meta:
