@@ -38,3 +38,6 @@ python manage.py insert_geo_data --type district --name Badulla --region-id LK-8
 python manage.py insert_geo_data --type district --name Moneragala --region-id LK-82 --data-file ../submodules/gig-data/geo/district/LK-82.json
 python manage.py insert_geo_data --type district --name Ratnapura --region-id LK-91 --data-file ../submodules/gig-data/geo/district/LK-91.json
 python manage.py insert_geo_data --type district --name Kegalle --region-id LK-92 --data-file ../submodules/gig-data/geo/district/LK-92.json
+
+## gnd
+

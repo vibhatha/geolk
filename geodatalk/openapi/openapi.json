@@ -2,41 +2,140 @@
   "openapi": "3.0.3",
   "info": {
     "title": "GeoPolygon GraphQL API",
-    "description": "GraphQL API for managing polygonal regions",
+    "description": "GraphQL API for managing polygonal regions and topologies",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.yourdomain.com/graphql",
-      "description": "GraphQL API"
+      "url": "https://api.yourdomain.com",
+      "description": "API Server"
     }
   ],
   "paths": {
-    "/graphql": {
-      "post": {
-        "summary": "Execute GraphQL queries",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "query": {
-                    "type": "string",
-                    "example": "query { allPolygons { name regionId } }"
+    "/api/topology/": {
+      "get": {
+        "summary": "List all topologies",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by region type (e.g., 'provincial', 'district')"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of topologies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Topology"
                   }
                 }
               }
             }
           }
-        },
+        }
+      }
+    },
+    "/api/topology/{region_id}/": {
+      "get": {
+        "summary": "Get topology by region ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "region_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Region ID (e.g., 'LK-1')"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "GraphQL response"
+            "description": "Topology data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Topology"
+                }
+              }
+            }
           }
         }
       }
     }
-  }
+  },
+  "components": {
+    "schemas": {
+      "Topology": {
+        "type": "object",
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "example": "LK-1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Western Province"
+          },
+          "type": {
+            "type": "string",
+            "example": "provincial"
+          },
+          "topology_data": {
+            "type": "object",
+            "description": "TopoJSON data structure",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "Topology"
+              },
+              "objects": {
+                "type": "object"
+              },
+              "arcs": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      },
+      "GeoPolygon": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "geometry": {
+            "type": "object",
+            "description": "GeoJSON geometry"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }
